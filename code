@@ -1,77 +1,95 @@
 #include<iostream>
 using namespace std;
-class node{
-public:
-    int data;
-    node*next;
-    node(int data){
-    this->data=data;
-    this->next=NULL;
+class sl {
+    struct node {
+        int data;
+        node*next;
+    };
+    node*start;
+  public:
+    sl() {
+        start=NULL;
+    };
+    void insertatlast(int data) {
+        node*n=new node;
+        n->data=data;
+        n->next=NULL;
+        if(!start) {
+            start=n;
+        } else {
+            node*a=start;
+            while(a->next) {
+                a=a->next;
+            }
+            n->next=a->next;
+            a->next=n;
+        }
     }
-};
-class mylinkedlist{
-public:
-    node*head;
-    node*tail;
-mylinkedlist(){
-this->head=NULL;
-this->tail=NULL;
-}
-void insert_(int data){
-node*n=new node(data);
-if(!head){
-    this->head=n;
-    this->tail=n;
-}else{
-this->tail->next=n;
-this->tail=n;
-}
-}
-void display(){
-node*t=head;
-while(t){
-    cout<<t->data;
-    t=t->next;
-}
-}
-node*partition_(node*head,node*tail){
-node*pivot=head;
-node*front=head;
-while(front and front!=tail){
-    if(front->data<tail->data){
-        pivot=head;
-        swap(front->data,head->data);
-        head=head->next;
-    }
-    front=front->next;
-}
-swap(head->data,tail->data);
-return pivot;
-}
-void quick(node*head,node*tail)
-{
-if(head==tail){
-    return;
-}
-node*pivot=partition_(head,tail);
-if(pivot and pivot->next){
-this->quick(pivot->next,tail);
-}
-if(pivot and pivot!=tail){
-this->quick(head,pivot);
-}
-}
-};
-int main(){
-mylinkedlist obj;
-obj.insert_(5);
-obj.insert_(4);
-obj.insert_(3);
-obj.insert_(2);
-obj.insert_(1);
-obj.quick(obj.head,obj.tail);
-obj.display();
+    void print() {
+        node*b=start;
+        while(b) {
+            cout<<b->data;
+            b=b->next;
+        }
 
-return 0;
+    }
+    node*findmid(node*head){
+    node*slow=head;
+    node*fast=head->next;
+    while(fast and fast->next){
+        fast=fast->next->next;
+        slow=slow->next;
+    }
+    return slow;
+    }
+    node*merge(node*a,node*b){
+    node*r=NULL;
+    if(!a){
+        return b;
+    }
+    if(!b){
+        return a;
+    }
+    if(a->data<b->data){
+        r=a;
+        r->next=merge(a->next,b);
+    }else {
+    r=b;
+    r->next=merge(a,b->next);
+    }
+    return r;
+    }
+node*mergefunction(node*head){
+if(!head || !head->next){
+    return head;
+}
+node*mid=findmid(head);
+node*left=head;
+node*right=mid->next;
+mid->next=NULL;
+left=mergefunction(left);
+right=mergefunction(right);
+
+node*result=merge(left,right);
+
+return result;
+}
+    void usemergesort() {
+        node*a=start;
+        start=mergefunction(a);
+    }
+};
+int main() {
+    sl obj;
+    obj.insertatlast(5);
+    obj.insertatlast(4);
+    obj.insertatlast(3);
+    obj.insertatlast(2);
+    obj.insertatlast(1);
+    obj.usemergesort();
+    obj.print();
+
+
+    return 0;
 }
 
